@@ -28,19 +28,19 @@ Após cada tentativa, as letras serão pintadas de acordo com sua posição na p
 
 Menu do jogo:
 
-![menu](./WordleGame/assets/interface.jpeg)
+![menu](./assets/)
 
 Início do jogo:
 
-![inicio](./WordleGame/assets/inicioJogo.jpeg)
+![inicio](./assets/inicioJogo.jpeg)
 
 Tentativas:
 
-![dueto](./WordleGame/assets/tentativas.jpeg)
+![dueto](./assets/tentativas.jpeg)
 
 Quando vencer o jogo:
 
-![venceu](./WordleGame/assets/venceu.jpeg)
+![venceu](./assets/venceu.jpeg)
 
 ## Aproveite o Jogo e se divirta!!
 
