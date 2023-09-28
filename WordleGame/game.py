@@ -2,6 +2,7 @@ import os
 from words import dictionary
 from remove_accents import RemoveAccent
 from rich import print
+from collections import defaultdict
 
 
 class Wordle:
@@ -19,24 +20,17 @@ class Wordle:
                         ]
 
 
-    def PrintMatrix(self, matrix, word):
-        for l in matrix:
-            line = " ".join(l)
-            idx = 0
-            for char in line:
-                if char != ' ' and char != '-' and idx < 6:
-                    if self.PaintLetters(char.lower(), idx, word.lower()) == 'green':
-                        print(f'[green]{char}', end='')
-                        idx += 1
-                    elif self.PaintLetters(char.lower(), idx, word.lower()) == 'yellow':
-                        print(f'[yellow]{char}', end='')
-                        idx += 1
-                    else:
-                        print(f'[red]{char}', end='')
-                        idx += 1
-                else:
-                    print(char, end='')
-            print('\n')
+    def PrintMatrix(self, matrix):
+        for line in matrix:
+            word_matrix = "".join(line)
+            colors_match = self.CompareWords(word_matrix.lower())
+            if not "-" in word_matrix and not " " in word_matrix:
+                for idx, char in enumerate(word_matrix):
+                    print(f'[{colors_match[idx]}]{char}', end=' ')
+                print()
+            else:
+                print(word_matrix)
+        print()
     
 
     def RefreshInterface(self, interface, word):
@@ -62,25 +56,29 @@ class Wordle:
             return False
 
 
-    def PaintLetters(self, char, position, _word):
-        nChar = self.word.count(char)
-        newString = _word[0:position+1]
-        nCharInNS = newString.count(char)
+    def CompareWords(self, word):
+        result = ["red"] * 5
+        found_letters_counter = defaultdict(int)
+        for idx in range(5):
+            if word[idx] == self.word[idx]:
+                result[idx] = "green"
+                found_letters_counter[word[idx]] += 1
 
-        if char.lower() == self.word[position]:
-            return 'green'
-        elif char.lower() in self.word and nCharInNS <= nChar:
-            return 'yellow'
-        else:
-            return 'red'
+        for idx in range(5):
+            if word[idx] in self.word and result[idx] != "green":
+                if found_letters_counter[word[idx]] < self.word.count(word[idx]):
+                    result[idx] = "yellow"
+                    found_letters_counter[word[idx]] += 1
+
+        return result
 
 
     def RunGame(self):
         self.interface
         while self.current_atmpt <= self.attempts:
             os.system('clear')
-            self.PrintMatrix(self.interface, '')
-            #print(self.word)
+            self.PrintMatrix(self.interface)
+            # print(self.word)
             print(f'Voce tem {self.attempts - self.current_atmpt} tentativas restantes')
 
             if self.attempts - self.current_atmpt == 0:
@@ -95,7 +93,7 @@ class Wordle:
                 if self.CheckWin(word_guess):
                     os.system('clear')
                     self.interface[self.current_atmpt] = self.RefreshInterface(self.interface, word_guess)
-                    self.PrintMatrix(self.interface, word_guess.lower())
+                    self.PrintMatrix(self.interface)    
                     print("[green]Voce[/] venceu!!!")
                     input()
                     break
